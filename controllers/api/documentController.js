@@ -31,7 +31,7 @@ exports.getDocument = function(req, res) {
         url: 'https://apistaging.collaborate.center',
         document: response.data,
         version: "0.0",
-        date: (new Date()).toISOString()
+        date: new Date()
       }, function(err, result) {
         client.close();
 
