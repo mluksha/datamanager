@@ -4,52 +4,35 @@ const MongoClient = require('mongodb').MongoClient;
 const config = require('../../dal/config');
 const documentUrl = 'https://apistaging.collaborate.center/swagger/v1/swagger.json';
 
-exports.getDocument = function(req, res) {
-  axios.get(documentUrl)
-  .then(response => {
-    console.log(response.data);
+exports.getDocument = async function (req, res) {
+    let dbClient = null;
+  
+    try {
+      const response = await axios.get(documentUrl);
 
-    const client = new MongoClient(config.uri, { useNewUrlParser: true });
-    client.connect(err => {
-      if (err) {
-        res.json({ 
-          success: false,
-          error: `Connection error: ${errerr.message}`
-        });
-
-        return;
-      }
-
-      const collection = client.db(config.dbName).collection("Documents");
-
-      collection.insertOne({
+      const client = new MongoClient(config.uri, { useNewUrlParser: true });
+      await client.connect();
+  
+      dbClient = client;
+      const documents = dbClient.db(config.dbName).collection('Documents');
+  
+      const resultDoc = await documents.insertOne({
         url: documentUrl,
         document: response.data,
         version: response.data.info.version,
-        date: new Date()
-      }, function(err, result) {
-        client.close();
+        date: new Date(),
+      });
 
-        if (err) {
-          res.json({ 
-            success: false,
-            error: `DB error: ${err.message}`
-          });
-
-          return;
-        }
-
-        res.json({ 
-          success: true,
-          updates: []
-        });
-      });      
-    });
-  })
-  .catch(error => {
-    res.json({ 
-      success: false,
-      error: `API error: ${error.message}`
-    });
-  });
+      res.json({
+        success: true,
+        updates: [],
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        error: error.message,
+      });
+    } finally {
+      dbClient && dbClient.close();
+    }
 };
