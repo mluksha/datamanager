@@ -43,7 +43,7 @@ exports.getDocument = async function (req, res) {
         error: error.message,
       });
     } finally {
-      dbClient && dbClient.close();
+      dbClient && await dbClient.close();
     }
 };
 
