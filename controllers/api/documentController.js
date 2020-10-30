@@ -1,66 +1,55 @@
 const axios = require('axios');
 const MongoClient = require('mongodb').MongoClient;
 
-const user = 'serveradmin';
-const password = 'Data#1nikita';
-const dbName = 'dm-staging';
-const uri = `mongodb+srv://${user}:${encodeURIComponent(password)}@cluster0.rnxp1.mongodb.net/${dbName}?retryWrites=true&w=majority`;
-
+const config = require('../../dal/config');
+const documentUrl = 'https://apistaging.collaborate.center/swagger/v1/swagger.json';
 
 exports.getDocument = function(req, res) {
-  axios.get('https://apistaging.collaborate.center/swagger/v1/swagger.json')
+  axios.get(documentUrl)
   .then(response => {
     console.log(response.data);
 
-    const client = new MongoClient(uri, { useNewUrlParser: true });
+    const client = new MongoClient(config.uri, { useNewUrlParser: true });
     client.connect(err => {
       if (err) {
-        console.log("Connection error");
-        console.log(err.message);
         res.json({ 
           success: false,
-          error: err.message
+          error: `Connection error: ${errerr.message}`
         });
 
         return;
       }
 
-      const collection = client.db(dbName).collection("Documents");
+      const collection = client.db(config.dbName).collection("Documents");
 
       collection.insertOne({
-        url: 'https://apistaging.collaborate.center',
+        url: documentUrl,
         document: response.data,
-        version: "0.0",
+        version: response.data.info.version,
         date: new Date()
       }, function(err, result) {
         client.close();
 
         if (err) {
-          console.log("Not inserted");
-          console.log(err.message);
           res.json({ 
             success: false,
-            error: err.message
+            error: `DB error: ${err.message}`
           });
 
           return;
         }
 
-        console.log("Inserted 1 document into the collection");
-        console.log(response.data);
-
         res.json({ 
           success: true,
-          document: response.data
+          updates: []
         });
       });      
     });
   })
   .catch(error => {
-    console.log(error);
     res.json({ 
       success: false,
-      error: error.message
+      error: `API error: ${error.message}`
     });
   });
 };
