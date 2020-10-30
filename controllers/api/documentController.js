@@ -20,7 +20,7 @@ exports.getDocument = async function (req, res) {
       const documents = dbClient.db(config.dbName).collection('Documents');
 
       const [latestDocument] = await documents.find().sort({date:-1}).limit(1).toArray();
-      const oldApiDocument = latestDocument.document;
+      const oldApiDocument = latestDocument && latestDocument.document;
 
       const updates = findDifference(newApiDocument, oldApiDocument);
 
@@ -50,6 +50,14 @@ exports.getDocument = async function (req, res) {
 
 function findDifference(newDoc, oldDoc) {
   const newApiList = Object.getOwnPropertyNames(newDoc.paths);
+  
+  if (!oldDoc) {
+    return {
+      added: newApiList,
+      removed: []
+    }
+  }
+
   const oldApiList = Object.getOwnPropertyNames(oldDoc.paths);
 
   const added = newApiList.filter(x => !oldApiList.includes(x));
