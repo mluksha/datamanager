@@ -86,7 +86,9 @@ function getMessage(data) {
 
 async function sendEmail(text) {
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
     auth: {
       user: config.email,
       pass: config.emailPassword
@@ -95,8 +97,8 @@ async function sendEmail(text) {
 
   await transporter.sendMail({
     from: config.email,
-    to: config.email,
-    subject: '[API UPDATES]',
+    to: 'nwork4@mail.ru',
+    subject: 'API UPDATES',
     text: text
   });
 }
