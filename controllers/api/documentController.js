@@ -1,10 +1,8 @@
 const axios = require('axios');
 const MongoClient = require('mongodb').MongoClient;
-const nodemailer = require('nodemailer');
 
-const config = require('../../dal/config');
+const config = require('../../config');
 const documentUrl = 'https://apistaging.collaborate.center/swagger/v1/swagger.json';
-
 
 
 exports.getDocument = async function (req, res) {
@@ -14,7 +12,7 @@ exports.getDocument = async function (req, res) {
       const response = await axios.get(documentUrl);
       const newApiDocument = response.data;
 
-      const client = new MongoClient(config.uri, { useNewUrlParser: true });
+      const client = new MongoClient(config.dbUri, { useNewUrlParser: true });
       await client.connect();
   
       dbClient = client;
@@ -35,9 +33,9 @@ exports.getDocument = async function (req, res) {
         });
 
         const message = getMessage(updates);
-        await sendEmail(message);
+        await sendTelegramMessage(message);
       } else {
-        await sendEmail('No updates');
+        await sendTelegramMessage('No updates');
       }
 
       res.json({
@@ -84,21 +82,13 @@ function getMessage(data) {
   return JSON.stringify(data, null, ' ');
 }
 
-async function sendEmail(text) {
-  const transporter = nodemailer.createTransport({
-    host: "smtp.mail.ru",
-    port: 465,
-    secure: true,
-    auth: {
-      user: config.email,
-      pass: config.emailPassword
+async function sendTelegramMessage(text) {
+  await axios({
+    method: 'post',
+    url: `https://api.telegram.org/bot${config.botToken}/sendMessage`,
+    data: {
+      chat_id: config.botChatId,
+      text
     }
-  });
-
-  await transporter.sendMail({
-    from: config.email,
-    to: 'nikita.luksha@softensity.com',
-    subject: '[API UPDATES]',
-    text: text
   });
 }
