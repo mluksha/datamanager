@@ -86,7 +86,7 @@ function getMessage(data) {
 
 async function sendEmail(text) {
   const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
+    host: "smtp.mail.ru",
     port: 465,
     secure: true,
     auth: {
@@ -97,8 +97,8 @@ async function sendEmail(text) {
 
   await transporter.sendMail({
     from: config.email,
-    to: 'nwork4@mail.ru',
-    subject: 'API UPDATES',
+    to: 'nikita.luksha@softensity.com',
+    subject: '[API UPDATES]',
     text: text
   });
 }
