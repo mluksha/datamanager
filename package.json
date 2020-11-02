@@ -7,6 +7,7 @@
     "devstart": "open http://localhost:3000 && nodemon ./bin/www",
     "deploy": "git push heroku main",
     "open": "heroku open",
+    "connect": "heroku git:remote -a ntk-core-datamanager",
     "serverstart": "DEBUG=express-locallibrary-tutorial:* npm run devstart"
   },
   "dependencies": {
