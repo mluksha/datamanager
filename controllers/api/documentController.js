@@ -34,8 +34,6 @@ exports.getDocument = async function (req, res) {
 
         const message = getMessage(updates);
         await sendTelegramMessage(message);
-      } else {
-        await sendTelegramMessage('No updates');
       }
 
       res.json({
@@ -79,7 +77,7 @@ function findDifference(newDoc, oldDoc) {
 }
 
 function getMessage(data) {
-  return JSON.stringify(data, null, ' ');
+  return `Api updates for ${documentUrl} \n${JSON.stringify(data, null, ' ')}`;
 }
 
 async function sendTelegramMessage(text) {
