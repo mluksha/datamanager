@@ -13,8 +13,12 @@ block content
         - const item = document.diff[i];
         - if (item.added) {
             pre(class="diff added") #{item.value}
-        - } else {
+        - } else if (item.removed) {
             pre(class="diff removed") #{item.value}
+        - } else if (item.info) {
+            pre(class="diff info") #{item.value}
+        - } else {
+            pre(class="diff") #{item.value}
         - }
       - }
     - } else {

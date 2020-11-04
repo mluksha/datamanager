@@ -9,7 +9,8 @@ a {
 
 .diff {
   margin: 0;
-  padding: 10px;
+  padding: 2px;
+  color: #7b7b7b;
 }
 
 .added {
@@ -21,3 +22,9 @@ a {
   background-color: #ffd8d8;
   color: #4f0000;
 }
+
+.info {
+  background-color: #daedf4;
+  color: #153944;
+}
+

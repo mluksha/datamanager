@@ -5,6 +5,7 @@ const MongoClient = require('mongodb').MongoClient;
 const config = require('../../config');
 const documentUrl = 'https://apistaging.collaborate.center/swagger/v1/swagger.json';
 
+
 exports.checkUpdates = async function (req, res) {
     let dbClient = null;
   
@@ -21,8 +22,7 @@ exports.checkUpdates = async function (req, res) {
       const [latestDocument] = await documents.find().sort({date:-1}).limit(1).toArray();
       const oldApiDocument = latestDocument && latestDocument.document;
 
-      const mergedData = findDifference(oldApiDocument, newApiDocument);
-      const diff = mergedData && mergedData.filter(x => x.added || x.removed);
+      const diff = findDifference(oldApiDocument, newApiDocument);
       const withUpdates = diff && diff.length > 0;
 
       if (withUpdates || !oldApiDocument) {
@@ -63,12 +63,36 @@ exports.checkUpdates = async function (req, res) {
     }
 };
 
+function getMessage(data) {
+  return JSON.stringify(data, (key, value) =>{
+    if (key === 'enum' || key === 'description') {
+      return undefined;
+    }
+
+    return value;
+  }, ' ');
+}
+
 function findDifference(oldDoc, newDoc) {
   if (!oldDoc) {
     return null;
   }
 
-  return jsDiff.diffJson(oldDoc, newDoc);
+  let diffArra = jsDiff.createPatch('', getMessage(oldDoc), getMessage(newDoc))
+    .split('\n')
+    .filter(x => x)
+    .map(line => {
+      const [firstCharacter] = line;
+      return {
+        value: line,
+        added: firstCharacter === '+',
+        removed: firstCharacter === '-',
+        info: firstCharacter === '@'
+      };
+    });
+  diffArra.splice(0,4);
+
+  return diffArra;
 }
 
 async function sendTelegramMessage(text) {
