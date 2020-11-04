@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
-const document = require('./document');
+const documents = require('./documents');
 
-router.use('/document', document);
+router.use('/documents', documents);
 
 module.exports = router;

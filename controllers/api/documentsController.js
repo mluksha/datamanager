@@ -1,11 +1,15 @@
 const axios = require('axios');
+const jsDiff = require('diff');
 const MongoClient = require('mongodb').MongoClient;
 
 const config = require('../../config');
 const documentUrl = 'https://apistaging.collaborate.center/swagger/v1/swagger.json';
 
 
-exports.getDocument = async function (req, res) {
+const oldDiffDoc = require('./dev-swagger.json');
+const newDiffDoc = require('./st-swagger.json');
+
+exports.checkUpdates = async function (req, res) {
     let dbClient = null;
   
     try {
@@ -21,27 +25,39 @@ exports.getDocument = async function (req, res) {
       const [latestDocument] = await documents.find().sort({date:-1}).limit(1).toArray();
       const oldApiDocument = latestDocument && latestDocument.document;
 
-      const updates = findDifference(newApiDocument, oldApiDocument);
+      const diff = findDifference(oldApiDocument, newApiDocument);
 
-
-      if (updates) {
-        const resultDoc = await documents.insertOne({
+      if (diff || !oldApiDocument) {
+        const documentData = {
           url: documentUrl,
           document: newApiDocument,
           version: newApiDocument.info.version,
+          diff,
           date: new Date(),
+        };
+
+        // const {insertedId} = await documents.insertOne(documentData);
+        const insertedId = '6060';
+
+        if (diff) {
+          //await sendTelegramMessage(`New api update v${documentData.version} ${documentData.date.toString()}:\nhttps://ntk-core-datamanager.herokuapp.com/documents/${insertedId}`);
+        }
+
+        res.json({
+          success: true,
+          documentId: insertedId,
+          diff
         });
 
-        const message = getMessage(updates);
-        await sendTelegramMessage(message);
+        return;
       }
 
       res.json({
-        success: true,
-        updates
+        success: true
       });
     } catch (error) {
-      res.status(500).json({
+      console.error(error);
+      res.status(400).json({
         success: false,
         error: error.message,
       });
@@ -50,34 +66,12 @@ exports.getDocument = async function (req, res) {
     }
 };
 
-
-function findDifference(newDoc, oldDoc) {
-  const newApiList = Object.getOwnPropertyNames(newDoc.paths);
-
+function findDifference(oldDoc, newDoc) {
   if (!oldDoc) {
-    return {
-      added: newApiList,
-      removed: []
-    }
-  }
-
-  const oldApiList = Object.getOwnPropertyNames(oldDoc.paths);
-
-  const added = newApiList.filter(x => !oldApiList.includes(x));
-  const removed = oldApiList.filter(x => !newApiList.includes(x));
-
-  if (added.length === 0 && removed.length === 0) {
     return null;
   }
 
-  return {
-    added,
-    removed
-  }
-}
-
-function getMessage(data) {
-  return `Api updates for ${documentUrl} \n${JSON.stringify(data, null, ' ')}`;
+  return jsDiff.diffJson(oldDoc, newDoc);
 }
 
 async function sendTelegramMessage(text) {
