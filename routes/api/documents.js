@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
-const documentsController = require('../../controllers/api/documentsController');
+const documentsApiController = require('../../controllers/api/documentsApiController');
 
-router.get('/checkUpdates', documentsController.checkUpdates);
+router.get('/checkUpdates', documentsApiController.checkUpdates);
 
 module.exports = router;
