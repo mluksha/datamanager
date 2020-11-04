@@ -6,3 +6,18 @@ body {
 a {
   color: #00B7FF;
 }
+
+.diff {
+  margin: 0;
+  padding: 10px;
+}
+
+.added {
+  background-color: #e5fbe5;
+  color: #0c4c0c;
+}
+
+.removed {
+  background-color: #ffd8d8;
+  color: #4f0000;
+}

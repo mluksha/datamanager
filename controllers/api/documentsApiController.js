@@ -6,8 +6,8 @@ const config = require('../../config');
 const documentUrl = 'https://apistaging.collaborate.center/swagger/v1/swagger.json';
 
 
-const oldDiffDoc = require('./dev-swagger.json');
-const newDiffDoc = require('./st-swagger.json');
+//const oldDiffDoc = require('./dev-swagger.json');
+//const newDiffDoc = require('./st-swagger.json');
 
 exports.checkUpdates = async function (req, res) {
     let dbClient = null;
@@ -25,9 +25,11 @@ exports.checkUpdates = async function (req, res) {
       const [latestDocument] = await documents.find().sort({date:-1}).limit(1).toArray();
       const oldApiDocument = latestDocument && latestDocument.document;
 
-      const diff = findDifference(oldApiDocument, newApiDocument);
+      const mergedData = findDifference(oldApiDocument, newApiDocument);
+      const diff = mergedData && mergedData.filter(x => x.added || x.removed);
+      const withUpdates = diff && diff.length > 0;
 
-      if (diff || !oldApiDocument) {
+      if (withUpdates || !oldApiDocument) {
         const documentData = {
           url: documentUrl,
           document: newApiDocument,
@@ -39,13 +41,14 @@ exports.checkUpdates = async function (req, res) {
         // const {insertedId} = await documents.insertOne(documentData);
         const insertedId = '6060';
 
-        if (diff) {
+        if (withUpdates) {
           //await sendTelegramMessage(`New api update v${documentData.version} ${documentData.date.toString()}:\nhttps://ntk-core-datamanager.herokuapp.com/documents/${insertedId}`);
         }
 
         res.json({
           success: true,
           documentId: insertedId,
+          withUpdates,
           diff
         });
 

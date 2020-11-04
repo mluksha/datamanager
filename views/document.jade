@@ -1,0 +1,25 @@
+extends layout
+
+block content
+  h1= title
+  - if (document) {
+    p Document: #{document._id}
+    p Version: #{document.version}
+    p Date: #{document.date}
+    p
+
+    - if(document.diff) {
+      - for (var i=0; i<document.diff.length; i++) {
+        - const item = document.diff[i];
+        - if (item.added) {
+            pre(class="diff added") #{item.value}
+        - } else {
+            pre(class="diff removed") #{item.value}
+        - }
+      - }
+    - } else {
+      p There is no updates
+    - }
+  -} else {
+    p Document is not found
+  -}
