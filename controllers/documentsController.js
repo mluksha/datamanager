@@ -3,20 +3,6 @@ const ObjectId = require('mongodb').ObjectID
 
 const config = require('../config');
 
-const diff = [
-  {
-      "count": 1,
-      "removed": true,
-      "value": "              \"11: ConcatenatedVideo\",\n"
-  },
-  {
-      "count": 1,
-      "added": true,
-      "value": "              \"11: ConcatenatedVideo\",\n"
-  }
-];
-
-
 exports.getDocument = async function(req, res) {
   const id = req.params.id;
   let dbClient = null;
@@ -30,8 +16,6 @@ exports.getDocument = async function(req, res) {
     const documents = dbClient.db(config.dbName).collection('Documents');
     document = await documents.findOne(ObjectId(id));
 
-    // todo: remove this
-    document.diff = diff;
   } catch (error) {
     console.error(error);
   } finally {

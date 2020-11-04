@@ -5,10 +5,6 @@ const MongoClient = require('mongodb').MongoClient;
 const config = require('../../config');
 const documentUrl = 'https://apistaging.collaborate.center/swagger/v1/swagger.json';
 
-
-//const oldDiffDoc = require('./dev-swagger.json');
-//const newDiffDoc = require('./st-swagger.json');
-
 exports.checkUpdates = async function (req, res) {
     let dbClient = null;
   
@@ -38,17 +34,15 @@ exports.checkUpdates = async function (req, res) {
           date: new Date(),
         };
 
-        // const {insertedId} = await documents.insertOne(documentData);
-        const insertedId = '6060';
+        const {insertedId} = await documents.insertOne(documentData);
 
         if (withUpdates) {
-          //await sendTelegramMessage(`New api update v${documentData.version} ${documentData.date.toString()}:\nhttps://ntk-core-datamanager.herokuapp.com/documents/${insertedId}`);
+          await sendTelegramMessage(`New api update v${documentData.version} ${documentData.date.toString()}:\nhttps://ntk-core-datamanager.herokuapp.com/documents/${insertedId}`);
         }
 
         res.json({
           success: true,
           documentId: insertedId,
-          withUpdates,
           diff
         });
 

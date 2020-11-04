@@ -1,8 +1,8 @@
 const axios = require('axios');
 
 function runService(){
-  axios.get('https://ntk-core-datamanager.herokuapp.com/api/document')
-  .catch(error => console.log(error.message));
+  axios.get('https://ntk-core-datamanager.herokuapp.com/api/documents/checkUpdates')
+  .catch(error => console.error(error.message));
 }
 
 runService();
