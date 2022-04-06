@@ -109,7 +109,7 @@ async function sendMessage(text) {
   // Send slack message
   await axios({
     method: 'post',
-    url: `https://hooks.slack.com/services/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`,
+    url: `https://hooks.slack.com/services/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`,
     data: {
       text
     }
