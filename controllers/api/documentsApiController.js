@@ -106,10 +106,10 @@ async function sendMessage(text) {
     }
   });
 
-  //send slack message
+  // Send slack message
   await axios({
     method: 'post',
-    url: `https://hooks.slack.com/services/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`,
+    url: `https://hooks.slack.com/services/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`,
     data: {
       text
     }
