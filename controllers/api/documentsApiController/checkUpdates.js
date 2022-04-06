@@ -2,6 +2,8 @@ const axios = require('axios');
 const jsDiff = require('diff');
 const MongoClient = require('mongodb').MongoClient;
 
+const config = require('../../../config')
+
 const documentUrl = 'https://apistaging.collaborate.center/swagger/v1/swagger.json';
 
 exports.checkUpdates = async function (req, res) {
@@ -10,7 +12,7 @@ exports.checkUpdates = async function (req, res) {
       const response = await axios.get(documentUrl);
       const newApiDocument = response.data;
 
-      const client = new MongoClient(`mongodb+srv://${process.env.USER}:${encodeURIComponent(process.env.PASSWORD)}@cluster0.rnxp1.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`, { useNewUrlParser: true });
+      const client = new MongoClient(config.mongoDBURL, { useNewUrlParser: true });
       await client.connect();
 
       dbClient = client;

@@ -1,21 +1,23 @@
 const MongoClient = require('mongodb').MongoClient;
 
+const config = require('../../../config')
+
 exports.cleanOutdated = async function (req, res) {
   let dbClient = null;
   try {
-    const client = new MongoClient(`mongodb+srv://${process.env.USER}:${encodeURIComponent(process.env.PASSWORD)}@cluster0.rnxp1.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`, { useNewUrlParser: true });
+    const client = new MongoClient(config.mongoDBURL, { useNewUrlParser: true });
     await client.connect();
 
     dbClient = client;
     const documents = dbClient.db(process.env.DB_NAME).collection('Documents');
     documentsCount = await documents.countDocuments();
 
-    if (documentsCount > 50) {
-      const latestDocuments = await documents.find().sort({date:-1}).limit(51).toArray();
+    if (documentsCount > config.messagesToKeepNumber) {
+      const latestDocuments = await documents.find().sort({date:-1}).limit(config.messagesToKeepNumber).toArray();
 
       const lastFromLatestDocument = latestDocuments[latestDocuments.length - 1];
 
-      await documents.deleteMany({date: {$lte:lastFromLatestDocument.date}});
+      await documents.deleteMany({date: {$lt:lastFromLatestDocument.date}});
     }
 
     res.json({
