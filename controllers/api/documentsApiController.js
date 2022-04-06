@@ -14,7 +14,7 @@ exports.checkUpdates = async function (req, res) {
 
       const client = new MongoClient(config.dbUri, { useNewUrlParser: true });
       await client.connect();
-  
+
       dbClient = client;
       const documents = dbClient.db(config.dbName).collection('Documents');
 
@@ -109,9 +109,14 @@ async function sendMessage(text) {
   // Send slack message
   await axios({
     method: 'post',
-    url: `https://hooks.slack.com/services/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`,
+    url: `https://slack.com/api/chat.postMessage`,
     data: {
-      text
+      channel: config.slackChanelId,
+      text,
+    },
+    headers: {
+      "Authorization": `Bearer ${config.slackToken}`,
+      "content-type": "application/json; charset=utf-8"
     }
   });
 }

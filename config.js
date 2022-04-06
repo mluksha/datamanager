@@ -8,3 +8,6 @@ exports.dbUri = `mongodb+srv://${user}:${encodeURIComponent(password)}@cluster0.
 
 exports.botToken = '1456202139:AAEdi5-su-wSa4TqIgy11UbMWT3ZWsEYuSo';
 exports.botChatId = '-406557804'; // '187722293'; //
+
+exports.slackChanelId = 'C03AAHRV5CK'
+exports.slackToken = 'xoxb-2918083386960-2893245709381-ADmGS5zA7Dm3yKS6MWKvxpQx'
