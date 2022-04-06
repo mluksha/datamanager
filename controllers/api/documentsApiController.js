@@ -23,7 +23,7 @@ exports.checkUpdates = async function (req, res) {
 
       const diff = findDifference(oldApiDocument, newApiDocument);
       const withUpdates = diff && diff.length > 0;
-      
+
       if (withUpdates || !oldApiDocument) {
         const documentData = {
           url: documentUrl,
@@ -109,7 +109,7 @@ async function sendMessage(text) {
   //send slack message
   await axios({
     method: 'post',
-    url: `https://hooks.slack.com/services/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`,
+    url: `https://hooks.slack.com/services/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`,
     data: {
       text
     }
