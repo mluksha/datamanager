@@ -2,9 +2,7 @@ const axios = require('axios');
 const jsDiff = require('diff');
 const MongoClient = require('mongodb').MongoClient;
 
-const config = require('../../config');
 const documentUrl = 'https://apistaging.collaborate.center/swagger/v1/swagger.json';
-
 
 exports.checkUpdates = async function (req, res) {
     let dbClient = null;
@@ -12,11 +10,11 @@ exports.checkUpdates = async function (req, res) {
       const response = await axios.get(documentUrl);
       const newApiDocument = response.data;
 
-      const client = new MongoClient(config.dbUri, { useNewUrlParser: true });
+      const client = new MongoClient(`mongodb+srv://${process.env.USER}:${encodeURIComponent(process.env.PASSWORD)}@cluster0.rnxp1.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`, { useNewUrlParser: true });
       await client.connect();
 
       dbClient = client;
-      const documents = dbClient.db(config.dbName).collection('Documents');
+      const documents = dbClient.db(process.env.DB_NAME).collection('Documents');
 
       const [latestDocument] = await documents.find().sort({date:-1}).limit(1).toArray();
       const oldApiDocument = latestDocument && latestDocument.document;
@@ -99,9 +97,9 @@ async function sendMessage(text) {
   // Send telegram message
   await axios({
     method: 'post',
-    url: `https://api.telegram.org/bot${config.botToken}/sendMessage`,
+    url: `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`,
     data: {
-      chat_id: config.botChatId,
+      chat_id: process.env.TELEGRAM_CHAT_ID,
       text
     }
   });
@@ -111,11 +109,11 @@ async function sendMessage(text) {
     method: 'post',
     url: `https://slack.com/api/chat.postMessage`,
     data: {
-      channel: config.slackChanelId,
+      channel: process.env.SLACK_CHANEL_ID,
       text,
     },
     headers: {
-      "Authorization": `Bearer ${config.slackToken}`,
+      "Authorization": `Bearer ${process.env.SLACK_BOT_TOKEN}`,
       "content-type": "application/json; charset=utf-8"
     }
   });
