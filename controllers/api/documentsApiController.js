@@ -37,7 +37,7 @@ exports.checkUpdates = async function (req, res) {
         const {insertedId} = await documents.insertOne(documentData);
 
         if (withUpdates) {
-          await sendTelegramMessage(`New api update v${documentData.version} ${documentData.date.toString()}:\nhttps://ntk-core-datamanager.herokuapp.com/documents/${insertedId}`);
+          await sendMessage(`New api update v${documentData.version} ${documentData.date.toString()}:\nhttps://ntk-core-datamanager.herokuapp.com/documents/${insertedId}`);
         }
 
         res.json({
@@ -95,12 +95,23 @@ function findDifference(oldDoc, newDoc) {
   return diffArra;
 }
 
-async function sendTelegramMessage(text) {
+async function sendMessage(text) {
+
+  // Send telegram message
   await axios({
     method: 'post',
     url: `https://api.telegram.org/bot${config.botToken}/sendMessage`,
     data: {
       chat_id: config.botChatId,
+      text
+    }
+  });
+
+  //send slack message
+  await axios({
+    method: 'post',
+    url: `https://hooks.slack.com/services/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`,
+    data: {
       text
     }
   });
