@@ -1,7 +1,7 @@
 const MongoClient = require('mongodb').MongoClient;
 const ObjectId = require('mongodb').ObjectID
 
-const config = require('../config');
+const config = require('../../../config')
 
 exports.getDocument = async function(req, res) {
   const id = req.params.id;
@@ -9,11 +9,11 @@ exports.getDocument = async function(req, res) {
   let document = null;
   
   try {
-    const client = new MongoClient(config.dbUri, { useNewUrlParser: true });
+    const client = new MongoClient(config.mongoDBURL, { useNewUrlParser: true });
     await client.connect();
     dbClient = client;
 
-    const documents = dbClient.db(config.dbName).collection('Documents');
+    const documents = dbClient.db(process.env.DB_NAME).collection('Documents');
     document = await documents.findOne(ObjectId(id));
 
   } catch (error) {

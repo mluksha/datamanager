@@ -2,22 +2,21 @@ const axios = require('axios');
 const jsDiff = require('diff');
 const MongoClient = require('mongodb').MongoClient;
 
-const config = require('../../config');
-const documentUrl = 'https://apistaging.collaborate.center/swagger/v1/swagger.json';
+const config = require('../../../config')
 
+const documentUrl = 'https://apistaging.collaborate.center/swagger/v1/swagger.json';
 
 exports.checkUpdates = async function (req, res) {
     let dbClient = null;
-  
     try {
       const response = await axios.get(documentUrl);
       const newApiDocument = response.data;
 
-      const client = new MongoClient(config.dbUri, { useNewUrlParser: true });
+      const client = new MongoClient(config.mongoDBURL, { useNewUrlParser: true });
       await client.connect();
-  
+
       dbClient = client;
-      const documents = dbClient.db(config.dbName).collection('Documents');
+      const documents = dbClient.db(process.env.DB_NAME).collection('Documents');
 
       const [latestDocument] = await documents.find().sort({date:-1}).limit(1).toArray();
       const oldApiDocument = latestDocument && latestDocument.document;
@@ -37,7 +36,7 @@ exports.checkUpdates = async function (req, res) {
         const {insertedId} = await documents.insertOne(documentData);
 
         if (withUpdates) {
-          await sendTelegramMessage(`New api update v${documentData.version} ${documentData.date.toString()}:\nhttps://ntk-core-datamanager.herokuapp.com/documents/${insertedId}`);
+          await sendMessage(`New api update v${documentData.version} ${documentData.date.toString()}:\nhttps://ntk-core-datamanager.herokuapp.com/documents/${insertedId}`);
         }
 
         res.json({
@@ -95,13 +94,19 @@ function findDifference(oldDoc, newDoc) {
   return diffArra;
 }
 
-async function sendTelegramMessage(text) {
+async function sendMessage(text) {
+
+  // Send slack message
   await axios({
     method: 'post',
-    url: `https://api.telegram.org/bot${config.botToken}/sendMessage`,
+    url: `https://slack.com/api/chat.postMessage`,
     data: {
-      chat_id: config.botChatId,
-      text
+      channel: process.env.SLACK_CHANEL_ID,
+      text,
+    },
+    headers: {
+      "Authorization": `Bearer ${process.env.SLACK_BOT_TOKEN}`,
+      "content-type": "application/json; charset=utf-8"
     }
   });
 }
