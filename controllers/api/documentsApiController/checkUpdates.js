@@ -96,16 +96,6 @@ function findDifference(oldDoc, newDoc) {
 
 async function sendMessage(text) {
 
-  // Send telegram message
-  await axios({
-    method: 'post',
-    url: `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`,
-    data: {
-      chat_id: process.env.TELEGRAM_CHAT_ID,
-      text
-    }
-  });
-
   // Send slack message
   await axios({
     method: 'post',
