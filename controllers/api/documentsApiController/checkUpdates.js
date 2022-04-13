@@ -7,7 +7,6 @@ const config = require('../../../config')
 const documentUrl = 'https://apistaging.collaborate.center/swagger/v1/swagger.json';
 
 exports.checkUpdates = async function (req, res) {
-    console.log('test')
     let dbClient = null;
     try {
       const response = await axios.get(documentUrl);
@@ -21,7 +20,6 @@ exports.checkUpdates = async function (req, res) {
 
       const [latestDocument] = await documents.find().sort({date:-1}).limit(1).toArray();
       const oldApiDocument = latestDocument && latestDocument.document;
-      console.log(oldApiDocument);
       const diff = findDifference(oldApiDocument, newApiDocument);
       const withUpdates = diff && diff.length > 0;
 
