@@ -1,4 +1,4 @@
-const { checkUpdates } = require("./checkUpdates");
+const {checkUpdates} = require("./checkUpdates");
 const {cleanOutdated} = require("./cleanOutdated")
 
 exports.checkUpdates = checkUpdates;
