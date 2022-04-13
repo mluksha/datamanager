@@ -1,7 +1,7 @@
 const MongoClient = require('mongodb').MongoClient;
 const ObjectId = require('mongodb').ObjectID
 
-const config = require('../../../config')
+const config = require('../config')
 
 exports.getDocument = async function(req, res) {
   const id = req.params.id;
