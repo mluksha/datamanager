@@ -20,7 +20,6 @@ exports.checkUpdates = async function (req, res) {
 
       const [latestDocument] = await documents.find().sort({date:-1}).limit(1).toArray();
       const oldApiDocument = latestDocument && latestDocument.document;
-
       const diff = findDifference(oldApiDocument, newApiDocument);
       const withUpdates = diff && diff.length > 0;
 
