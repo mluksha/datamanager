@@ -9,7 +9,7 @@ exports.getDocument = async function(req, res) {
   let document = null;
   
   try {
-    const client = new MongoClient(config.mongoDBURL, { useNewUrlParser: true });
+    const client = new MongoClient(config.mongoDBURL, { useNewUrlParser: true, useUnifiedTopology: true });
     await client.connect();
     dbClient = client;
 

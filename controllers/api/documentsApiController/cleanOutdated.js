@@ -5,7 +5,7 @@ const config = require('../../../config')
 exports.cleanOutdated = async function (req, res) {
   let dbClient = null;
   try {
-    const client = new MongoClient(config.mongoDBURL, { useNewUrlParser: true });
+    const client = new MongoClient(config.mongoDBURL, { useNewUrlParser: true, useUnifiedTopology: true });
     await client.connect();
 
     dbClient = client;

@@ -12,7 +12,7 @@ exports.checkUpdates = async function (req, res) {
       const response = await axios.get(documentUrl);
       const newApiDocument = response.data;
 
-      const client = new MongoClient(config.mongoDBURL, { useNewUrlParser: true });
+      const client = new MongoClient(config.mongoDBURL, { useNewUrlParser: true, useUnifiedTopology: true });
       await client.connect();
 
       dbClient = client;
