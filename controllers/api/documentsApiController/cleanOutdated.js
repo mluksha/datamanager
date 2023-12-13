@@ -9,7 +9,7 @@ exports.cleanOutdated = async function (req, res) {
     await client.connect();
 
     dbClient = client;
-    const documents = dbClient.db(process.env.DB_NAME).collection('Documents');
+    const documents = dbClient.db(config.mongoDbName).collection('Documents');
     documentsCount = await documents.countDocuments();
 
     if (documentsCount > config.messagesToKeepNumber) {

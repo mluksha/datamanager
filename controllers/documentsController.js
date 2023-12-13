@@ -13,7 +13,7 @@ exports.getDocument = async function(req, res) {
     await client.connect();
     dbClient = client;
 
-    const documents = dbClient.db(process.env.DB_NAME).collection('Documents');
+    const documents = dbClient.db(config.mongoDbNameE).collection('Documents');
     document = await documents.findOne(ObjectId(id));
 
   } catch (error) {

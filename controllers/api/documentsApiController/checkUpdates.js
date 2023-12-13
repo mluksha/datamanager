@@ -16,7 +16,7 @@ exports.checkUpdates = async function (req, res) {
       await client.connect();
 
       dbClient = client;
-      const documents = dbClient.db(process.env.DB_NAME).collection('Documents');
+      const documents = dbClient.db(config.mongoDbName).collection('Documents');
 
       const [latestDocument] = await documents.find().sort({date:-1}).limit(1).toArray();
       const oldApiDocument = latestDocument && latestDocument.document;
@@ -100,11 +100,11 @@ async function sendMessage(text) {
     method: 'post',
     url: `https://slack.com/api/chat.postMessage`,
     data: {
-      channel: process.env.SLACK_CHANEL_ID,
+      channel: config.slackChanelId,
       text,
     },
     headers: {
-      "Authorization": `Bearer ${process.env.SLACK_BOT_TOKEN}`,
+      "Authorization": `Bearer ${config.slackToken}`,
       "content-type": "application/json; charset=utf-8"
     }
   });
