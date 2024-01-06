@@ -35,7 +35,7 @@ exports.checkUpdates = async function (req, res) {
         const {insertedId} = await documents.insertOne(documentData);
 
         if (withUpdates) {
-          await sendMessage(`New api update v${documentData.version} ${documentData.date.toString()}:\nhttps://nkt-core-datamanager.onrender.com/documents/${insertedId}`);
+          await sendMessage(`New api update v${documentData.version} ${documentData.date.toString()}:\n${config.host}/documents/${insertedId}`);
         }
 
         res.json({
