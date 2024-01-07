@@ -6,7 +6,12 @@ block content
     p Document: #{document._id}
     p Version: #{document.version}
     p Date: #{document.date}
-    a(href=document.url) #{document.url}
+    p
+      a(href=document.url) #{document.url}
+    - if (document.previousDocumentId) {
+      p
+        a(href=`/documents/${document.previousDocumentId}`) Prevoius document
+    - }
     p
 
     - if(document.diff) {
