@@ -15,7 +15,6 @@ exports.getDocument = async function(req, res) {
 
     const documents = dbClient.db(config.mongoDbNameE).collection('Documents');
     document = await documents.findOne(ObjectId(id), {projection: {document:0}});
-
   } catch (error) {
     console.error(error);
   } finally {

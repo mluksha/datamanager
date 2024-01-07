@@ -1,17 +1,19 @@
 extends layout
 
 block content
-  h1= title
+  h1
+    a(href="/documents") Home
+    span 
+    span=title
   - if (document) {
-    p Document: #{document._id}
-    p Version: #{document.version}
-    p Date: #{document.date}
-    p
-      a(href=document.url) #{document.url}
     - if (document.previousDocumentId) {
       p
         a(href=`/documents/${document.previousDocumentId}`) Prevoius document
     - }
+    p Version: #{document.version}
+    p Date: #{document.date}
+    p
+      a(href=document.url) #{document.url}
     p
 
     - if(document.diff) {
