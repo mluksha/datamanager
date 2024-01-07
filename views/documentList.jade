@@ -1,0 +1,19 @@
+extends layout
+
+block content
+  h1
+    a(href="/") Home
+    span 
+    span=title
+
+  - for (var i=0; i< list.length; i++) {
+    - const item = list[i];
+    - const id = item._id.toString();
+
+    p
+      a(href=`/documents/${id}`) #{id}
+      br
+      span #{item.url}
+      br
+      span #{item.date}
+  - }

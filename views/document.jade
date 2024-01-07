@@ -2,7 +2,9 @@ extends layout
 
 block content
   h1
-    a(href="/documents") Home
+    a(href="/") Home
+    span 
+    a(href="/documents") Documents
     span 
     span=title
   - if (document) {
@@ -10,10 +12,10 @@ block content
       p
         a(href=`/documents/${document.previousDocumentId}`) Prevoius document
     - }
-    p Version: #{document.version}
-    p Date: #{document.date}
     p
       a(href=document.url) #{document.url}
+    p Version: #{document.version}
+    p Date: #{document.date}
     p
 
     - if(document.diff) {
