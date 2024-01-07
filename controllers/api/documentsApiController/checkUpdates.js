@@ -33,7 +33,7 @@ exports.checkUpdates = async function (req, res) {
       dbClient = client;
       const documents = dbClient.db(config.mongoDbName).collection('Documents');
 
-      const [latestDocument] = await documents.find({ url: documentUrl }).sort({date:-1}).limit(1).toArray();
+      const [latestDocument] = await documents.find({ url: documentUrl }, { projection: { _id: 1, document: 1 } }).sort({date:-1}).limit(1).toArray();
       const oldApiDocument = latestDocument && latestDocument.document;
       const diff = findDifference(oldApiDocument, newApiDocument);
       const withUpdates = diff && diff.length > 0;
