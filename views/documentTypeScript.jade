@@ -1,0 +1,26 @@
+extends layout
+
+block content
+  h1
+    a(href="/") Home
+    span 
+    a(href="/documents") Documents
+    span 
+    span=title
+  - if (document) {
+    - if (document.previousDocumentId) {
+      p
+        a(href=`/documents/${document.previousDocumentId}`) Prevoius document
+    - }
+    p
+      a(href=`/documents/${documentId}`) Diff
+    p
+      a(href=document.url) #{document.url}
+    p Version: #{document.version}
+    p Date: #{document.date}
+    p
+
+    pre #{document.document}
+  -} else {
+    p Document is not found
+  -}

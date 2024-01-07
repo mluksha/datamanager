@@ -13,6 +13,8 @@ block content
         a(href=`/documents/${document.previousDocumentId}`) Prevoius document
     - }
     p
+      a(href='/documents/' + documentId + '/typescript') TypeScript
+    p
       a(href=document.url) #{document.url}
     p Version: #{document.version}
     p Date: #{document.date}
