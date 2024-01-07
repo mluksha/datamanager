@@ -11,14 +11,15 @@ block content
     - if(document.diff) {
       - for (var i=0; i<document.diff.length; i++) {
         - const item = document.diff[i];
-        - if (item.added) {
-            pre(class="diff added") #{item.value}
-        - } else if (item.removed) {
-            pre(class="diff removed") #{item.value}
-        - } else if (item.info) {
-            pre(class="diff info") #{item.value}
+        - const firstSimbol = item[0];
+        - if (firstSimbol === '+') {
+            pre(class="diff added") #{item}
+        - } else if (firstSimbol === '-') {
+            pre(class="diff removed") #{item}
+        - } else if (firstSimbol === '@') {
+            pre(class="diff info") #{item}
         - } else {
-            pre(class="diff") #{item.value}
+            pre(class="diff") #{item}
         - }
       - }
     - } else {
