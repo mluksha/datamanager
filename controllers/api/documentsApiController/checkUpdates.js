@@ -7,7 +7,7 @@ const fs = require("fs");
 
 const config = require('../../../config')
 
-// tenant: https%3A%2F%2Fapi-dev.collaborate.center%2Fstaging%2Ftenant-service%2Fswagger%2Fv1%2Fswagger.json
+// tenant documentUrl: https%3A%2F%2Fapi-dev.collaborate.center%2Fstaging%2Ftenant-service%2Fswagger%2Fv1%2Fswagger.json
 
 exports.checkUpdates = async function (req, res) {
     let dbClient = null;
@@ -33,7 +33,7 @@ exports.checkUpdates = async function (req, res) {
       dbClient = client;
       const documents = dbClient.db(config.mongoDbName).collection('Documents');
 
-      const [latestDocument] = await documents.find().sort({date:-1}).limit(1).toArray();
+      const [latestDocument] = await documents.find({ url: documentUrl }).sort({date:-1}).limit(1).toArray();
       const oldApiDocument = latestDocument && latestDocument.document;
       const diff = findDifference(oldApiDocument, newApiDocument);
       const withUpdates = diff && diff.length > 0;
