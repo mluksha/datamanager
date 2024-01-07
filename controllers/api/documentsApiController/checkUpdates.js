@@ -33,7 +33,12 @@ exports.checkUpdates = async function (req, res) {
       dbClient = client;
       const documents = dbClient.db(config.mongoDbName).collection('Documents');
 
-      const [latestDocument] = await documents.find({ url: documentUrl }, { projection: { _id: 1, document: 1 } }).sort({date:-1}).limit(1).toArray();
+      const [latestDocument] = await documents
+        .find({ url: documentUrl }, { projection: { _id: 1, document: 1 } })
+        .sort({date:-1})
+        .limit(1)
+        .toArray();
+      
       const oldApiDocument = latestDocument && latestDocument.document;
       const diff = findDifference(oldApiDocument, newApiDocument);
       const withUpdates = diff && diff.length > 0;
@@ -90,10 +95,8 @@ function findDifference(oldDoc, newDoc) {
 }
 
 async function sendMessage(text) {
-  console.log('Message: ' + text);
-
   // Send slack message
-  /*
+
   await axios({
     method: 'post',
     url: `https://slack.com/api/chat.postMessage`,
@@ -106,7 +109,6 @@ async function sendMessage(text) {
       "content-type": "application/json; charset=utf-8"
     }
   });
-  */
 }
 
 async function getTypeScriptDocument(filePath) {
@@ -125,7 +127,7 @@ async function getTypeScriptDocument(filePath) {
       sortRoutes: true
     });
 
-    const data ='\n T3est \n' + (files.map( x => x.fileContent).join(''));
+    const data = files.map( x => x.fileContent).join('');
   
     return data;
   } catch (error) {
