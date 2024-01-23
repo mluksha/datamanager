@@ -96,7 +96,6 @@ function findDifference(oldDoc, newDoc) {
 
 async function sendMessage(text) {
   // Send slack message
-
   await axios({
     method: 'post',
     url: `https://slack.com/api/chat.postMessage`,
@@ -139,7 +138,10 @@ async function getTypeScriptDocument(filePath) {
 async function saveSwaggerToFile(url) {
   try {
     const response = await axios.get(url);
-    const swaggerDocument = JSON.stringify(response.data);
+    const swaggerData = response.data;
+    rename3dModelsPaths(swaggerData);
+
+    const swaggerDocument = JSON.stringify(swaggerData);
     const dirPath = './tmp';
     const fileName = `swagger-${Math.random()}.json`;
 
@@ -163,4 +165,18 @@ async function removeFile(filePath) {
   } catch (error) {
     console.log('Can not remove file');
   }
+}
+
+function rename3dModelsPaths(swaggerData) {
+  const {paths} = swaggerData;
+
+  const pathNames = Object.getOwnPropertyNames(paths);
+  const _3dModelsPathNames = pathNames.filter(x => x.includes("/api/3dModels"));
+
+  _3dModelsPathNames.forEach(name => {
+    const newName = name.replace('/api/3dModels', '/api/The3dModels');
+
+    paths[newName] = paths[name];
+    delete paths[name];
+  });
 }
