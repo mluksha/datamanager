@@ -56,7 +56,7 @@ exports.checkUpdates = async function (req, res) {
         const {insertedId} = await documents.insertOne(documentData);
 
         if (withUpdates) {
-          await sendMessage(`New api update v${documentData.version} ${documentData.date.toString()}:\n${config.host}/documents/${insertedId}`);
+          await sendMessage(`New api update ${documentData.version} ${documentData.date.toString()}:\n${config.host}/documents/${insertedId}`);
         }
 
         res.json({
@@ -137,7 +137,13 @@ async function getTypeScriptDocument(filePath) {
 
 async function saveSwaggerToFile(url) {
   try {
-    const response = await axios.get(url);
+    const response = await axios.get(url, {
+      auth: {
+        username: config.swaggerUser,
+        password: config.swaggerPassword
+      }
+    });
+    
     const swaggerData = response.data;
     rename3dModelsPaths(swaggerData);
 

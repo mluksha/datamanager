@@ -7,3 +7,6 @@ exports.slackChanelId = process.env.SLACK_CHANEL_ID;
 exports.slackToken = process.env.SLACK_BOT_TOKEN;
 
 exports.messagesToKeepNumber = 50;
+
+exports.swaggerUser = process.env.SWAGGER_USER;
+exports.swaggerPassword = process.env.SWAGGER_PASSWORD;
